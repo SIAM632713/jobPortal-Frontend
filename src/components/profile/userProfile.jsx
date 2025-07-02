@@ -1,0 +1,114 @@
+import React from 'react';
+import { Mail, Calendar, Pencil } from 'lucide-react';
+import Updateprofile from "@/components/profile/Updateprofile.jsx";
+import {useGetUserQuery} from "@/redux/feature/authAPI/authAPI.js";
+import {useSelector} from "react-redux";
+import Loading from "@/components/Screenloading/Loading.jsx";
+
+const UserProfile = () => {
+
+    const {user}=useSelector((state) => state.auth);
+    const {data,error,isLoading,refetch}=useGetUserQuery(user?._id)
+
+    const {profilePhoto,fullname,bio,email,phone,skills,resume}=data?.data || []
+
+   const [isModalOpen, setIsModalOpen] = React.useState(false);
+   const HandleModalopen=()=>setIsModalOpen(true);
+   const HandleModalclose=()=>setIsModalOpen(false);
+
+
+
+    if (isLoading) return (
+        <div className="flex justify-center mt-10">
+            <Loading />
+        </div>
+    );
+
+    if (error) {
+        return (
+            <div className="flex flex-col items-center justify-center mt-10 text-red-600">
+                <p className="text-lg font-semibold">Failed to load.</p>
+                <p className="text-sm text-gray-600">
+                    {error?.error || "Something went wrong. Please try again later."}
+                </p>
+            </div>
+        );
+    }
+
+
+    return (
+        <div className="max-w-[1400px] mx-auto p-6 bg-white dark:bg-gray-900 shadow-md rounded-xl relative">
+            <div className="flex items-start gap-4">
+                {/* Profile Image */}
+                <img
+                    src={profilePhoto}
+                    alt="Profile"
+                    className="w-16 h-16 rounded-full"
+                />
+                <div className="flex-1">
+                    {/* Name and Bio */}
+                    <h2 className="text-lg font-semibold text-gray-900 dark:text-white">{fullname || "Name is not added"}</h2>
+                    <p className="text-sm text-gray-600 dark:text-gray-300">
+                        {bio || "Bio is not added"}
+                    </p>
+
+                    {/* Email */}
+                    <div className="mt-4 flex items-center gap-2 text-gray-800 dark:text-gray-200 text-sm">
+                        <Mail size={16}/>
+                        <span>{email || "Email is not added"}</span>
+                    </div>
+
+                    {/* Phone */}
+                    <div className="mt-2 flex items-center gap-2 text-gray-800 dark:text-gray-200 text-sm">
+                        <Calendar size={16}/>
+                        <span>{phone || "Phone number is not added"}</span>
+                    </div>
+
+                    {/* Skills */}
+                        <div className="mt-4">
+                            <h4 className="text-sm font-medium text-gray-800 dark:text-gray-200 mb-2">Skills</h4>
+                            {skills && (typeof skills === "string" ? skills.split(",") : skills).length > 0 ?(
+                            <div className="flex flex-wrap gap-2">
+                                {(typeof skills === "string" ? skills.split(",") : skills).map((skill, index) => (
+                                    <span
+                                        key={index}
+                                        className="bg-gray-800 text-white text-xs px-3 py-1 rounded-full"
+                                    >
+                                     {skill.trim()}
+                                 </span>
+                                ))}
+                            </div>
+                                ): (
+                                <p className="text-sm text-gray-500">No skills added</p>
+                            )}
+                        </div>
+
+                    {/* Resume Link */}
+                    <div className="mt-4">
+                        <h4 className="text-sm font-semibold text-gray-800 dark:text-gray-200">Resume</h4>
+                        {resume ? (
+                            <a
+                                href={resume}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-sm text-blue-600 hover:underline"
+                            >
+                                View Resume
+                            </a>
+                        ) : (
+                            <p className="text-sm text-gray-500">No resume uploaded</p>
+                        )}
+                    </div>
+                </div>
+
+                {/* Edit Icon */}
+                <button className="absolute top-4 right-4 text-gray-500 hover:text-gray-800 dark:hover:text-white">
+                    <Pencil onClick={HandleModalopen} size={18}/>
+                </button>
+            </div>
+            <Updateprofile isModalOpen={isModalOpen} HandleModalclose={HandleModalclose} refetch={refetch}/>
+        </div>
+    );
+};
+
+export default UserProfile;
