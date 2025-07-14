@@ -5,6 +5,7 @@ import Loading from "@/components/Screenloading/Loading.jsx";
 import {useApplyJobsMutation} from "@/redux/feature/applicationAPI/applicationAPI.js";
 import toast from "react-hot-toast";
 import {useSelector} from "react-redux";
+import {getToken} from "@/utilitis/sessionHelper.js";
 
 const JobDescription = () => {
 
@@ -25,6 +26,10 @@ const JobDescription = () => {
     });
 
     const HandleapplyJobs=async(id)=>{
+        if(!getToken()){
+            toast.error("Please Login First")
+            return;
+        }
         try {
             await applyJobs(id).unwrap()
             toast.success("Apply job successfully.")
