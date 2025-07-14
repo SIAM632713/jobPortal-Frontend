@@ -53,26 +53,25 @@ const JobDescription = () => {
     }
 
     return (
-        <div className="max-w-[1400px] mx-auto p-6 bg-white rounded shadow mt-10">
+        <div className="max-w-[1400px] mx-auto p-4 sm:p-8 bg-white rounded-xl shadow-lg mt-6 sm:mt-10">
             {/* Header */}
-            <div className="flex justify-between items-start flex-wrap gap-4">
-                <div>
-                    <h1 className="text-2xl font-semibold mb-2">Frontend Developer</h1>
-                    <div className="flex flex-wrap gap-3 text-sm">
-                        <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full font-medium">{position}</span>
-                        <span className="bg-red-100 text-red-700 px-3 py-1 rounded-full font-medium">{jobType}</span>
-                        <span
-                            className="bg-purple-100 text-purple-700 px-3 py-1 rounded-full font-medium">{salary}</span>
+            <div className="flex flex-col sm:flex-row justify-between items-start gap-4 sm:gap-6">
+                <div className="space-y-3">
+                    <h1 className="text-2xl sm:text-3xl font-bold text-gray-800">{title}</h1>
+                    <div className="flex flex-wrap gap-2">
+                        <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-xs sm:text-sm font-medium">{position}</span>
+                        <span className="bg-red-100 text-red-800 px-3 py-1 rounded-full text-xs sm:text-sm font-medium">{jobType}</span>
+                        <span className="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-xs sm:text-sm font-medium">{salary}</span>
                     </div>
                 </div>
 
                 <button
                     onClick={() => HandleapplyJobs(id)}
                     disabled={userApplied}
-                    className={`px-4 py-2 rounded font-medium ${
+                    className={`px-5 py-2.5 rounded-lg font-medium text-sm sm:text-base transition-all duration-300 ${
                         userApplied
-                            ? "bg-gray-300 text-gray-700 cursor-not-allowed"
-                            : "bg-purple-600 text-white cursor-pointer"
+                            ? "bg-gray-200 text-gray-600 cursor-not-allowed"
+                            : "bg-purple-600 hover:bg-purple-700 text-white shadow-md hover:shadow-lg"
                     }`}
                 >
                     {userApplied ? "Already Applied" : "Apply Now"}
@@ -80,14 +79,44 @@ const JobDescription = () => {
             </div>
 
             {/* Job Description */}
-            <div className="mt-6 border-t pt-6 space-y-3 text-sm sm:text-base">
-                <p><span className="font-semibold">Role:</span> {title}</p>
-                <p><span className="font-semibold">Location:</span> {location}</p>
-                <p><span className="font-semibold">Description:</span>{description}</p>
-                <p><span className="font-semibold">Experience:</span>{requirements}</p>
-                <p><span className="font-semibold">Salary:</span>{salary}</p>
-                <p><span className="font-semibold">Total Applicant:</span> {application?.length || 0}</p>
-                <p><span className="font-semibold">Posted Date:</span>{new Date(createdAt).toLocaleDateString()}</p>
+            <div className="mt-8 border-t pt-6 space-y-4 text-sm sm:text-base">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-3">
+                        <p className="flex items-start">
+                            <span className="font-semibold text-gray-700 min-w-[120px]">Role:</span>
+                            <span className="text-gray-600">{title}</span>
+                        </p>
+                        <p className="flex items-start">
+                            <span className="font-semibold text-gray-700 min-w-[120px]">Location:</span>
+                            <span className="text-gray-600">{location}</span>
+                        </p>
+                        <p className="flex items-start">
+                            <span className="font-semibold text-gray-700 min-w-[120px]">Salary:</span>
+                            <span className="text-gray-600">{salary}</span>
+                        </p>
+                    </div>
+                    <div className="space-y-3">
+                        <p className="flex items-start">
+                            <span className="font-semibold text-gray-700 min-w-[120px]">Posted Date:</span>
+                            <span className="text-gray-600">{new Date(createdAt).toLocaleDateString()}</span>
+                        </p>
+                        <p className="flex items-start">
+                            <span className="font-semibold text-gray-700 min-w-[120px]">Applicants:</span>
+                            <span className="text-gray-600">{application?.length || 0}</span>
+                        </p>
+                    </div>
+                </div>
+
+                <div className="pt-4 space-y-4">
+                    <div>
+                        <h3 className="font-semibold text-lg text-gray-800 mb-2">Job Description</h3>
+                        <p className="text-gray-600 leading-relaxed">{description}</p>
+                    </div>
+                    <div>
+                        <h3 className="font-semibold text-lg text-gray-800 mb-2">Requirements</h3>
+                        <p className="text-gray-600 leading-relaxed">{requirements}</p>
+                    </div>
+                </div>
             </div>
         </div>
     );

@@ -1,10 +1,10 @@
 import React from 'react';
-import JobPost from "@/components/adminDashboard/jobPost/jobPost.jsx";
+import JobList from "@/components/adminDashboard/jobPost/jobList.jsx";
 
 const JobPostPage = () => {
     return (
         <>
-            <JobPost/>
+            <JobList/>
         </>
     );
 };

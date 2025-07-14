@@ -1,123 +1,194 @@
 import React, {useState} from 'react';
-import {Link} from "react-router-dom";
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger
-} from "@/components/ui/dropdown-menu.jsx";
-import {MoreHorizontal} from "lucide-react";
-import {
-    useDeleteJobByIdMutation,
-    useGetJobPostQuery,
-    useListByKeywordServiceQuery
-} from "@/redux/feature/jobAPI/jobAPI.js";
-import {confirmDelete, showError, showSuccess} from "@/utilitis/sweetalertHelper.js";
-import Loading from "@/components/Screenloading/Loading.jsx";
+import {useGetAllcompanyQuery} from "@/redux/feature/companyAPI/companyAPI.js";
+import {useJobPostsMutation} from "@/redux/feature/jobAPI/jobAPI.js";
+import {useSelector} from "react-redux";
+import ButtonLoader from "@/components/buttonLoader/buttonLoader.jsx";
 
 const JobPost = () => {
 
-    const {data,error,isLoading,refetch}=useGetJobPostQuery()
-   const [deleteJobById]=useDeleteJobByIdMutation()
+    const {user}=useSelector((state) => state.auth);
+    const [jobPosts,{isLoading}]=useJobPostsMutation()
+    const {data}=useGetAllcompanyQuery()
 
-    const [search,setsearch]=useState("")
-    const {data:searchData}=useListByKeywordServiceQuery(search,{
-        skip:search===""
-    })
+    const compnayData=data?.data || []
 
-    const jobList=search ? (Array.isArray(searchData?.data) ? searchData?.data : []) : (Array.isArray(data?.data) ? data?.data : [])
+    const [Upload,setUpload]=useState()
 
+    const [inputForm, setinputForm] = useState({
+        title: "",
+        description: "",
+        requirements: "",
+        salary: "",
+        location:"",
+        jobType:"",
+        position:"",
+        companyID:"",
+        createdBy:""
+    });
 
-    const HandledeleteJob=async(id)=>{
-        const result=await confirmDelete()
-        if(result.isConfirmed){
-            try {
-                await deleteJobById(id).unwrap()
-                await showSuccess("job deleted successfully.")
-                refetch()
-            }catch(error){
-            showError("Job deleted failed")
+    const handleOnChange = (e) => {
+        const { name, value} = e.target;
+        setinputForm({
+            ...inputForm,
+            [name]:value
+        })
+    };
+
+    const handleSubmit =async (e) => {
+        e.preventDefault();
+        setUpload(true);
+        try {
+            if (!inputForm.title || !inputForm.description || !inputForm.companyID) {
+                alert("Please fill all required fields");
+                return;
             }
+
+            const newJob={
+                title:inputForm.title,
+                description:inputForm.description,
+                requirements:inputForm.requirements,
+                salary:inputForm.salary,
+                location:inputForm.location,
+                jobType:inputForm.jobType,
+                position:inputForm.position,
+                companyID:inputForm.companyID,
+                createdBy:user?._id
+            }
+
+            await jobPosts(newJob).unwrap()
+            alert("Company Created Successfully")
+            setinputForm({
+                title: "",
+                description: "",
+                requirements: "",
+                salary: "",
+                location:"",
+                jobType:"",
+                position:"",
+                companyID:"",
+                createdBy:""
+            })
+        }catch(err) {
+            console.log(err);
+        }finally {
+            setUpload(false);
         }
     }
 
-
-    if (isLoading) return (
-        <div className="flex justify-center mt-10">
-            <Loading />
-        </div>
-    );
-
-    if (error) {
-        return (
-            <div className="flex flex-col items-center justify-center mt-10 text-red-600">
-                <p className="text-lg font-semibold">Failed to load.</p>
-                <p className="text-sm text-gray-600">
-                    {error?.error || "Something went wrong. Please try again later."}
-                </p>
-            </div>
-        );
-    }
-
     return (
-        <div className="max-w-[1440px] mx-auto">
-            <div className="p-6 bg-white rounded-lg shadow mt-10">
-                <div className="flex items-center justify-between mb-4">
-                    <input
-                        type="text"
-                        placeholder="Filter by title"
-                        value={search}
-                        onChange={e => setsearch(e.target.value)}
-                        className="border border-gray-300 rounded-md px-3 py-2 w-64 text-sm"
-                    />
-                    <Link to="/dashboard/creat-company"
-                          className="bg-gray-900 text-white px-4 py-2 rounded-md text-sm hover:bg-gray-800 transition">
-                        New Company
-                    </Link>
-                </div>
+        <div className="flex items-center justify-center min-h-screen bg-gray-50 px-4 py-8">
+            <div className="bg-white p-6 sm:p-8 rounded-xl shadow-md w-full max-w-2xl">
+                <h1 className="text-xl sm:text-2xl font-bold text-gray-800 mb-6">Create New Job Post</h1>
 
-                <div className="overflow-x-auto">
-                    <table className="min-w-full text-sm text-left">
-                        <thead className="border-b">
-                        <tr>
-                            <th className="px-4 py-2 font-medium text-gray-700">Company Name</th>
-                            <th className="px-4 py-2 font-medium text-gray-700">Role</th>
-                            <th className="px-4 py-2 font-medium text-gray-700">Date</th>
-                            <th className="px-4 py-2 font-medium text-gray-700">Action</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {
-                            jobList.map((item, index) => (
-                                <tr key={index} className="border-b">
-                                    <td className="px-4 py-3">{item?.companyID?.name}</td>
-                                    <td className="px-4 py-3">{item?.title}</td>
-                                    <td className="px-4 py-3">{new Date(item?.createdAt).toLocaleDateString()}</td>
-                                    <td className="px-4 py-3">
-                                        <DropdownMenu>
-                                            <DropdownMenuTrigger asChild>
-                                                <button className="p-1 rounded hover:bg-gray-100">
-                                                    <MoreHorizontal className="h-4 w-4 text-gray-600"/>
-                                                </button>
-                                            </DropdownMenuTrigger>
-                                            <DropdownMenuContent align="end">
-                                             <Link to={`/dashboard/applicant/${item?._id}`}><DropdownMenuItem>Applicant</DropdownMenuItem></Link>
-                                                <Link to={`/dashboard/update-job-post/${item?._id}`}>
-                                                    <DropdownMenuItem>Edit</DropdownMenuItem></Link>
-                                                <DropdownMenuItem onClick={()=>HandledeleteJob(item?._id)}>Delete</DropdownMenuItem>
-                                            </DropdownMenuContent>
-                                        </DropdownMenu>
-                                    </td>
-                                </tr>
-                            ))
-                        }
-                        </tbody>
-                    </table>
-                </div>
+                <form className="space-y-6">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+                        <div>
+                            <label className="block text-sm sm:text-base font-medium text-gray-700 mb-2">Job Title*</label>
+                            <input
+                                value={inputForm.title}
+                                onChange={handleOnChange}
+                                name="title"
+                                type="text"
+                                placeholder="Software Engineer"
+                                className="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent"
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-sm sm:text-base font-medium text-gray-700 mb-2">Job Description*</label>
+                            <input
+                                value={inputForm.description}
+                                onChange={handleOnChange}
+                                name="description"
+                                type="text"
+                                placeholder="Job responsibilities and details"
+                                className="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent"
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-sm sm:text-base font-medium text-gray-700 mb-2">Requirements</label>
+                            <input
+                                value={inputForm.requirements}
+                                onChange={handleOnChange}
+                                name="requirements"
+                                type="text"
+                                placeholder="Skills and qualifications"
+                                className="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent"
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-sm sm:text-base font-medium text-gray-700 mb-2">Salary</label>
+                            <input
+                                value={inputForm.salary}
+                                onChange={handleOnChange}
+                                name="salary"
+                                type="text"
+                                placeholder="$70,000 - $90,000"
+                                className="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent"
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-sm sm:text-base font-medium text-gray-700 mb-2">Location</label>
+                            <input
+                                value={inputForm.location}
+                                onChange={handleOnChange}
+                                name="location"
+                                type="text"
+                                placeholder="City, Country"
+                                className="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent"
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-sm sm:text-base font-medium text-gray-700 mb-2">Job Type</label>
+                            <input
+                                value={inputForm.jobType}
+                                onChange={handleOnChange}
+                                name="jobType"
+                                type="text"
+                                placeholder="Full-time, Remote, etc."
+                                className="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent"
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-sm sm:text-base font-medium text-gray-700 mb-2">Positions Available</label>
+                            <input
+                                value={inputForm.position}
+                                onChange={handleOnChange}
+                                name="position"
+                                type="number"
+                                placeholder="Number of openings"
+                                className="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent"
+                            />
+                        </div>
+                    </div>
 
-                <p className="text-xs text-gray-500 text-center mt-3">
-                    A list of your recent registered companies
-                </p>
+                    <div>
+                        <label className="block text-sm sm:text-base font-medium text-gray-700 mb-2">Company*</label>
+                        <select
+                            name="companyID"
+                            value={inputForm.companyID}
+                            onChange={handleOnChange}
+                            className="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent"
+                        >
+                            <option value="">Select a Company</option>
+                            {
+                                compnayData.map(company => (
+                                    <option key={company?._id} value={company?._id}>
+                                        {company.name}
+                                    </option>
+                                ))
+                            }
+                        </select>
+                    </div>
+
+                    <button
+                        onClick={handleSubmit}
+                        type="submit"
+                        disabled={isLoading || Upload}
+                        className="w-full bg-gray-900 text-white py-3 rounded-lg hover:bg-gray-800 text-sm sm:text-base font-medium mt-4"
+                    >
+                        {isLoading || Upload ? <ButtonLoader/> : "Post Job"}
+                    </button>
+                </form>
             </div>
         </div>
     );

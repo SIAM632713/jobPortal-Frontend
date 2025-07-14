@@ -15,15 +15,15 @@ const AllApplicant = () => {
     const {data,error,isLoading,refetch}=useGetApplicantAdminUserQuery(id)
     const [updateStatus]=useUpdateStatusMutation()
 
-   const updateStatusHandeler=async(applicationId,newStatus)=>{
+    const updateStatusHandeler=async(applicationId,newStatus)=>{
         try {
-         await updateStatus({id:applicationId,status:newStatus})
+            await updateStatus({id:applicationId,status:newStatus})
             alert("Status Update successfully")
             refetch()
         }catch(err){
-         console.log(err)
+            console.log(err)
         }
-   }
+    }
 
     const ApplicantData=data?.data || []
 
@@ -45,30 +45,36 @@ const AllApplicant = () => {
     }
 
     return (
-        <div className="max-w-[1440px] mx-auto">
-            <div className="p-6 bg-white rounded-lg shadow mt-10">
-                <h1 className="text-xl font-bold">Applicants : {ApplicantData.length || 0}</h1>
-                <div className="overflow-x-auto mt-5">
-                    <table className="min-w-full text-sm text-left">
-                        <thead className="border-b">
+        <div className="max-w-[1440px] mx-auto px-4 sm:px-6">
+            <div className="p-4 sm:p-6 bg-white rounded-lg shadow-md mt-6 sm:mt-10">
+                <h1 className="text-lg sm:text-xl font-bold text-gray-800">Applicants: {ApplicantData.length || 0}</h1>
+                <div className="overflow-x-auto mt-4 sm:mt-5">
+                    <table className="min-w-full text-sm">
+                        <thead className="border-b border-gray-200">
                         <tr>
-                            <th className="px-4 py-2 font-medium text-gray-700">Full Name</th>
-                            <th className="px-4 py-2 font-medium text-gray-700">Email</th>
-                            <th className="px-4 py-2 font-medium text-gray-700">Contact</th>
-                            <th className="px-4 py-2 font-medium text-gray-700">Resume</th>
-                            <th className="px-4 py-2 font-medium text-gray-700">Date</th>
-                            <th className="px-4 py-2 font-medium text-gray-700">Action</th>
+                            <th className="px-4 py-3 font-medium text-gray-700 text-left">Full Name</th>
+                            <th className="px-4 py-3 font-medium text-gray-700 text-left">Email</th>
+                            <th className="px-4 py-3 font-medium text-gray-700 text-left">Contact</th>
+                            <th className="px-4 py-3 font-medium text-gray-700 text-left">Resume</th>
+                            <th className="px-4 py-3 font-medium text-gray-700 text-left">Date</th>
+                            <th className="px-4 py-3 font-medium text-gray-700 text-left">Action</th>
                         </tr>
                         </thead>
-                        <tbody>
+                        <tbody className="divide-y divide-gray-200">
                         {
                             ApplicantData.map((item,index) => (
-                                <tr key={index} className="border-b">
-                                    <td className="px-4 py-3">{item?.applicant?.fullname}</td>
-                                    <td className="px-4 py-3">{item?.applicant?.email}</td>
-                                    <td className="px-4 py-3">{item?.applicant?.phone}</td>
-                                    <td className="px-4 py-3">{item?.applicant?.resume}</td>
-                                    <td className="px-4 py-3">{new Date(item?.createdAt).toLocaleDateString()}</td>
+                                <tr key={index} className="hover:bg-gray-50">
+                                    <td className="px-4 py-3 text-gray-800">{item?.applicant?.fullname}</td>
+                                    <td className="px-4 py-3 text-gray-600">{item?.applicant?.email}</td>
+                                    <td className="px-4 py-3 text-gray-600">{item?.applicant?.phone}</td>
+                                    <td className="px-4 py-3 text-gray-600">
+                                        {item?.applicant?.resume ? (
+                                            <a href={item.applicant.resume} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+                                                View
+                                            </a>
+                                        ) : 'N/A'}
+                                    </td>
+                                    <td className="px-4 py-3 text-gray-600">{new Date(item?.createdAt).toLocaleDateString()}</td>
                                     <td className="px-4 py-3">
                                         <DropdownMenu>
                                             <DropdownMenuTrigger asChild>
@@ -76,23 +82,37 @@ const AllApplicant = () => {
                                                     <MoreHorizontal className="h-4 w-4 text-gray-600"/>
                                                 </button>
                                             </DropdownMenuTrigger>
-                                            <DropdownMenuContent align="end">
-                                                <DropdownMenuItem onClick={()=>updateStatusHandeler(item?._id,"pending")}>pending</DropdownMenuItem>
-                                                <DropdownMenuItem onClick={()=>updateStatusHandeler(item?._id,"accepted")}>accepted</DropdownMenuItem>
-                                                <DropdownMenuItem onClick={()=>updateStatusHandeler(item?._id,"rejected")}>rejected</DropdownMenuItem>
+                                            <DropdownMenuContent align="end" className="min-w-[120px]">
+                                                <DropdownMenuItem
+                                                    onClick={()=>updateStatusHandeler(item?._id,"pending")}
+                                                    className="cursor-pointer"
+                                                >
+                                                    Pending
+                                                </DropdownMenuItem>
+                                                <DropdownMenuItem
+                                                    onClick={()=>updateStatusHandeler(item?._id,"accepted")}
+                                                    className="cursor-pointer text-green-600 focus:text-green-600"
+                                                >
+                                                    Accepted
+                                                </DropdownMenuItem>
+                                                <DropdownMenuItem
+                                                    onClick={()=>updateStatusHandeler(item?._id,"rejected")}
+                                                    className="cursor-pointer text-red-600 focus:text-red-600"
+                                                >
+                                                    Rejected
+                                                </DropdownMenuItem>
                                             </DropdownMenuContent>
                                         </DropdownMenu>
                                     </td>
                                 </tr>
                             ))
                         }
-
                         </tbody>
                     </table>
                 </div>
 
-                <p className="text-xs text-gray-500 text-center mt-3">
-                    A list of your recent registered companies
+                <p className="text-xs sm:text-sm text-gray-500 text-center mt-3 py-2">
+                    Showing {ApplicantData.length} applicants
                 </p>
             </div>
         </div>

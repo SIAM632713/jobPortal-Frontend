@@ -22,18 +22,18 @@ const EditCompany = () => {
     });
 
     useEffect(() => {
-      if(data?.data){
-          const company=data?.data.find(item=>item._id===id)
-          if(company){
-              setinputForm({
-                  name : company.name || "",
-                  description:company.description || "",
-                  website :company.website || "",
-                  location : company.location || "",
-                  imageFile:company.logo || ""
-              })
-          }
-      }
+        if(data?.data){
+            const company=data?.data.find(item=>item._id===id)
+            if(company){
+                setinputForm({
+                    name : company.name || "",
+                    description:company.description || "",
+                    website :company.website || "",
+                    location : company.location || "",
+                    imageFile:company.logo || ""
+                })
+            }
+        }
     },[data,id])
 
     const handleOnChange = (e) => {
@@ -89,82 +89,90 @@ const EditCompany = () => {
     }
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-white px-4">
-            <div className="w-full max-w-[1000px] rounded-2xl shadow-lg p-10">
+        <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4 py-8">
+            <div className="w-full max-w-[1000px] rounded-xl shadow-md bg-white p-6 sm:p-10">
                 {/* Header */}
-                <div className="flex items-center gap-2 mb-6">
-                    <Link to="/dashboard/company" className="p-2 rounded hover:bg-gray-100">
-                        <ArrowLeft size={20}/>
+                <div className="flex items-center gap-3 mb-8">
+                    <Link to="/dashboard/company" className="p-2 rounded-full hover:bg-gray-100 transition-colors">
+                        <ArrowLeft size={20} className="text-gray-600"/>
                     </Link>
-                    <h2 className="text-xl font-semibold">Update Company</h2>
+                    <h2 className="text-xl sm:text-2xl font-semibold text-gray-800">Update Company</h2>
                 </div>
 
                 {/* Form */}
-                <form className="space-y-4">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <form className="space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                         <div>
-                            <label className="block text-sm font-medium mb-1">Company Name</label>
+                            <label className="block text-sm sm:text-base font-medium text-gray-700 mb-2">Company Name</label>
                             <input
                                 value={inputForm.name}
                                 onChange={handleOnChange}
                                 name="name"
                                 type="text"
-                                className="w-full border rounded px-3 py-2 outline-none focus:ring-1 focus:ring-black"
-                                placeholder="Company Name"
+                                className="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent"
+                                placeholder="Enter company name"
                             />
                         </div>
                         <div>
-                            <label className="block text-sm font-medium mb-1">Description</label>
+                            <label className="block text-sm sm:text-base font-medium text-gray-700 mb-2">Description</label>
                             <input
                                 value={inputForm.description}
                                 onChange={handleOnChange}
                                 name="description"
                                 type="text"
-                                className="w-full border rounded px-3 py-2 outline-none focus:ring-1 focus:ring-black"
-                                placeholder="Description"
+                                className="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent"
+                                placeholder="Brief company description"
                             />
                         </div>
                         <div>
-                            <label className="block text-sm font-medium mb-1">Website</label>
+                            <label className="block text-sm sm:text-base font-medium text-gray-700 mb-2">Website</label>
                             <input
                                 value={inputForm.website}
                                 onChange={handleOnChange}
                                 name="website"
                                 type="text"
-                                className="w-full border-2 border-black rounded px-3 py-2 outline-none focus:ring-1 focus:ring-black"
-                                placeholder="Website"
+                                className="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent"
+                                placeholder="https://example.com"
                             />
                         </div>
                         <div>
-                            <label className="block text-sm font-medium mb-1">Location</label>
+                            <label className="block text-sm sm:text-base font-medium text-gray-700 mb-2">Location</label>
                             <input
                                 value={inputForm.location}
                                 onChange={handleOnChange}
                                 name="location"
                                 type="text"
-                                className="w-full border rounded px-3 py-2 outline-none focus:ring-1 focus:ring-black"
-                                placeholder="Location"
+                                className="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent"
+                                placeholder="Company location"
                             />
                         </div>
                         <div className="md:col-span-2">
-                            <label className="block text-base font-medium mb-2">Logo</label>
-                            <input
-                                onChange={handleOnChange}
-                                name="imageFile"
-                                type="file"
-                                className="w-full border rounded px-4 py-3 file:mr-4 file:py-2 file:px-4 file:border file:border-gray-300 file:rounded file:bg-gray-100 file:text-base"
-                            />
+                            <label className="block text-sm sm:text-base font-medium text-gray-700 mb-2">Company Logo</label>
+                            <div className="border-2 border-dashed border-gray-300 rounded-lg p-4">
+                                <input
+                                    onChange={handleOnChange}
+                                    name="imageFile"
+                                    type="file"
+                                    className="w-full text-sm text-gray-500
+                                        file:mr-4 file:py-2 file:px-4
+                                        file:rounded-md file:border-0
+                                        file:text-sm file:font-medium
+                                        file:bg-gray-100 file:text-gray-700
+                                        hover:file:bg-gray-200"
+                                />
+                            </div>
                         </div>
                     </div>
 
                     {/* Button */}
-                    <div className="pt-4">
+                    <div className="pt-2">
                         <button
                             onClick={handleSubmit}
                             type="submit"
-                            className="w-full bg-black text-white py-2 rounded hover:bg-opacity-90 transition"
+                            disabled={isLoading || Upload}
+                            className="w-full bg-gray-900 text-white py-3 rounded-lg hover:bg-gray-800 text-sm sm:text-base font-medium"
                         >
-                            {isLoading || Upload ? <ButtonLoader/> : "Update"}
+                            {isLoading || Upload ? <ButtonLoader/> : "Update Company"}
                         </button>
                     </div>
                 </form>

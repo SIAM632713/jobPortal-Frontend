@@ -29,8 +29,9 @@ const jobAPI=createApi({
             })
         }),
         getjobByFilter:builder.query({
-            query:({title,location,minSalary,maxSalary})=>{
+            query:({keyword,title,location,minSalary,maxSalary})=>{
                 const queryParams=new URLSearchParams({
+                    keyword:keyword || "",
                     title:title || "",
                     location:location || "",
                     minSalary:minSalary || 0,
@@ -57,9 +58,16 @@ const jobAPI=createApi({
                 url:`/get-jobsearch?keyword=${encodeURIComponent(keyword)}`,
                 method:"GET"
             })
+        }),
+        jobPosts:builder.mutation({
+            query:(newJob)=>({
+                url:"/job-post",
+                method:"POST",
+                body:newJob
+            })
         })
     })
 })
 
-export const {useGetJobPostQuery,useGetJobPostbyIDQuery,useGetJobbyCategoryQuery,useGetjobByFilterQuery,useDeleteJobByIdMutation,useEditJobByIdMutation,useListByKeywordServiceQuery}=jobAPI;
+export const {useGetJobPostQuery,useGetJobPostbyIDQuery,useGetJobbyCategoryQuery,useGetjobByFilterQuery,useDeleteJobByIdMutation,useEditJobByIdMutation,useListByKeywordServiceQuery,useJobPostsMutation}=jobAPI;
 export default jobAPI;

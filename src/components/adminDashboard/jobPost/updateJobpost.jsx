@@ -4,10 +4,7 @@ import {ArrowLeft} from "lucide-react";
 import ButtonLoader from "@/components/buttonLoader/buttonLoader.jsx";
 import {useEditJobByIdMutation, useGetJobPostQuery} from "@/redux/feature/jobAPI/jobAPI.js";
 
-
-
 const UpdateJobpost = () => {
-
     const {id} = useParams();
     const [editJobById,{isLoading}]=useEditJobByIdMutation(id)
     const {data}=useGetJobPostQuery()
@@ -24,20 +21,20 @@ const UpdateJobpost = () => {
     });
 
     useEffect(()=>{
-       if(data?.data){
-           const jobData=data?.data.find(item=>item._id===id)
-           if(jobData){
-               setinputForm({
-                   title:jobData.title || "",
-                   description:jobData.description || "",
-                   requirements:jobData.requirements || "",
-                   salary:jobData.salary || "",
-                   location:jobData.location || "",
-                   jobType:jobData.jobType || "",
-                   position:jobData.position || ""
-               })
-           }
-       }
+        if(data?.data){
+            const jobData=data?.data.find(item=>item._id===id)
+            if(jobData){
+                setinputForm({
+                    title:jobData.title || "",
+                    description:jobData.description || "",
+                    requirements:jobData.requirements || "",
+                    salary:jobData.salary || "",
+                    location:jobData.location || "",
+                    jobType:jobData.jobType || "",
+                    position:jobData.position || ""
+                })
+            }
+        }
     },[])
 
     const handleOnChange = (e) => {
@@ -45,12 +42,10 @@ const UpdateJobpost = () => {
         setinputForm(prev => ({ ...prev, [name]: value }));
     }
 
-
     const handleSubmit =async (e) => {
         e.preventDefault();
         setUpload(true);
         try {
-
             const newData={
                 title:inputForm.title,
                 description:inputForm.description,
@@ -80,106 +75,107 @@ const UpdateJobpost = () => {
     }
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-white px-4">
-            <div className="w-full max-w-[1000px] rounded-2xl shadow-lg p-10">
+        <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4 py-8">
+            <div className="w-full max-w-[1000px] rounded-xl shadow-lg p-6 md:p-8 bg-white">
                 {/* Header */}
-                <div className="flex items-center gap-2 mb-6">
-                    <Link to="/dashboard/job-post" className="p-2 rounded hover:bg-gray-100">
-                        <ArrowLeft size={20}/>
+                <div className="flex items-center gap-3 mb-8">
+                    <Link to="/dashboard/job-post" className="p-2 rounded-full hover:bg-gray-100 transition-colors">
+                        <ArrowLeft size={20} className="text-gray-700"/>
                     </Link>
-                    <h2 className="text-xl font-semibold">Update Job</h2>
+                    <h2 className="text-2xl font-bold text-gray-800">Update Job Post</h2>
                 </div>
 
                 {/* Form */}
-                <form className="space-y-4">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label className="block text-sm font-medium mb-1">Job Title</label>
+                <form className="space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="space-y-2">
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Job Title</label>
                             <input
                                 value={inputForm.title}
                                 onChange={handleOnChange}
                                 name="title"
                                 type="text"
-                                className="w-full border rounded px-3 py-2 outline-none focus:ring-1 focus:ring-black"
-                                placeholder="Company Name"
+                                className="w-full border border-gray-300 rounded-lg px-4 py-2.5 outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                                placeholder="Enter job title"
                             />
                         </div>
-                        <div>
-                            <label className="block text-sm font-medium mb-1">Description</label>
+                        <div className="space-y-2">
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
                             <input
                                 value={inputForm.description}
                                 onChange={handleOnChange}
                                 name="description"
                                 type="text"
-                                className="w-full border rounded px-3 py-2 outline-none focus:ring-1 focus:ring-black"
-                                placeholder="Description"
+                                className="w-full border border-gray-300 rounded-lg px-4 py-2.5 outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                                placeholder="Enter job description"
                             />
                         </div>
-                        <div>
-                            <label className="block text-sm font-medium mb-1">Requirements</label>
+                        <div className="space-y-2">
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Requirements</label>
                             <input
                                 value={inputForm.requirements}
                                 onChange={handleOnChange}
                                 name="requirements"
                                 type="text"
-                                className="w-full border rounded px-3 py-2 outline-none focus:ring-1 focus:ring-black"
-                                placeholder="requirement"
+                                className="w-full border border-gray-300 rounded-lg px-4 py-2.5 outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                                placeholder="Enter requirements"
                             />
                         </div>
-                        <div>
-                            <label className="block text-sm font-medium mb-1">Salary</label>
+                        <div className="space-y-2">
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Salary</label>
                             <input
                                 value={inputForm.salary}
                                 onChange={handleOnChange}
                                 name="salary"
                                 type="text"
-                                className="w-full border rounded px-3 py-2 outline-none focus:ring-1 focus:ring-black"
-                                placeholder="salary"
+                                className="w-full border border-gray-300 rounded-lg px-4 py-2.5 outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                                placeholder="Enter salary range"
                             />
                         </div>
-                        <div>
-                            <label className="block text-sm font-medium mb-1">Location</label>
+                        <div className="space-y-2">
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Location</label>
                             <input
                                 value={inputForm.location}
                                 onChange={handleOnChange}
                                 name="location"
                                 type="text"
-                                className="w-full border rounded px-3 py-2 outline-none focus:ring-1 focus:ring-black"
-                                placeholder="Location"
+                                className="w-full border border-gray-300 rounded-lg px-4 py-2.5 outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                                placeholder="Enter location"
                             />
                         </div>
-                        <div>
-                            <label className="block text-sm font-medium mb-1">Job Type</label>
+                        <div className="space-y-2">
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Job Type</label>
                             <input
                                 value={inputForm.jobType}
                                 onChange={handleOnChange}
                                 name="jobType"
                                 type="text"
-                                className="w-full border rounded px-3 py-2 outline-none focus:ring-1 focus:ring-black"
-                                placeholder="type"
+                                className="w-full border border-gray-300 rounded-lg px-4 py-2.5 outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                                placeholder="Enter job type"
                             />
                         </div>
-                        <div>
-                            <label className="block text-sm font-medium mb-1">No of Position</label>
+                        <div className="space-y-2">
+                            <label className="block text-sm font-medium text-gray-700 mb-1">No of Position</label>
                             <input
                                 value={inputForm.position}
                                 onChange={handleOnChange}
                                 name="position"
                                 type="text"
-                                className="w-full border rounded px-3 py-2 outline-none focus:ring-1 focus:ring-black"
-                                placeholder="position"
+                                className="w-full border border-gray-300 rounded-lg px-4 py-2.5 outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                                placeholder="Enter number of positions"
                             />
                         </div>
                     </div>
 
                     {/* Button */}
-                    <div className="pt-4">
+                    <div className="pt-2">
                         <button
                             onClick={handleSubmit}
                             type="submit"
-                            className="w-full bg-black text-white py-2 rounded hover:bg-opacity-90 transition"
+                            disabled={isLoading || Upload}
+                            className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors font-medium disabled:opacity-70 disabled:cursor-not-allowed"
                         >
-                            {isLoading || Upload ? <ButtonLoader/> : "Update"}
+                            {isLoading || Upload ? <ButtonLoader/> : "Update Job Post"}
                         </button>
                     </div>
                 </form>

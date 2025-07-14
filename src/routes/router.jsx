@@ -2,7 +2,6 @@ import {createBrowserRouter} from "react-router-dom";
 import App from "@/App.jsx";
 import HomePage from "@/page/home-page.jsx";
 import JobPage from "@/page/job-page.jsx";
-import BrowsePage from "@/page/browse-page.jsx";
 import LoginPage from "@/page/login-page.jsx";
 import RegisterPage from "@/page/register-page.jsx";
 import ProfilePage from "@/page/profile-page.jsx";
@@ -15,6 +14,7 @@ import CreatCompany from "@/components/adminDashboard/company/creatCompany.jsx";
 import EditCompany from "@/components/adminDashboard/company/editCompany.jsx";
 import UpdateJobpost from "@/components/adminDashboard/jobPost/updateJobpost.jsx";
 import AllApplicant from "@/components/adminDashboard/jobPost/all-applicant.jsx";
+import JobPost from "@/components/adminDashboard/jobPost/jobPost.jsx";
 
 
 const router=createBrowserRouter([
@@ -35,10 +35,6 @@ const router=createBrowserRouter([
                 element:<JobDescriptionPage/>,
             },
             {
-                path:'/browse',
-                element:<BrowsePage/>
-            },
-            {
                 path:'/profile',
                 element:<ProfilePage/>
             }
@@ -53,8 +49,12 @@ const router=createBrowserRouter([
                 element:<CompanyPage/>
             },
             {
-                path: "job-post",
+                path: "job-list",
                 element:<JobPostPage/>
+            },
+            {
+              path: "job-post",
+              element:<JobPost/>
             },
             {
               path: "update-job-post/:id",
