@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import JobFilter from './JobFilter';
+import JobFilter from './JobFilter.jsx';
 import { Link, useSearchParams } from "react-router-dom";
 import { useGetjobByFilterQuery } from "@/redux/feature/jobAPI/jobAPI.js";
 import Loading from "@/components/Screenloading/Loading.jsx";
