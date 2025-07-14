@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import { Badge } from "@/components/ui/badge";
 import Loading from "@/components/Screenloading/Loading.jsx";
+import {Link} from "react-router-dom";
 
 const Latestjob = ({jobList,isLoading,error}) => {
 
@@ -34,27 +35,32 @@ const Latestjob = ({jobList,isLoading,error}) => {
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {jobList.slice(0,visibleJob).map((item, index) => (
-                    <div
-                        key={index}
-                        className="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition-all duration-300 border border-gray-100 hover:border-purple-100"
-                    >
-                        <div className="flex items-start justify-between">
-                            <div>
-                                <h3 className="text-lg font-bold text-gray-900">{item.company}</h3>
-                                <p className="text-sm text-gray-500 mt-1">{item.location}</p>
-                            </div>
-                            <span className="bg-purple-100 text-purple-800 text-xs px-2 py-1 rounded-full">
+                    <Link to={`/jobDescription/${item?._id}`}>
+                        <div
+                            key={index}
+                            className="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition-all duration-300 border border-gray-100 hover:border-purple-100"
+                        >
+                            <div className="flex items-start justify-between">
+                                <div>
+                                    <h3 className="text-lg font-bold text-gray-900">{item.company}</h3>
+                                    <p className="text-sm text-gray-500 mt-1">{item.location}</p>
+                                </div>
+                                <span className="bg-purple-100 text-purple-800 text-xs px-2 py-1 rounded-full">
                                 New
                             </span>
+                            </div>
+                            <h4 className="mt-3 text-lg font-bold text-gray-800">{item.title}</h4>
+                            <p className="text-sm text-gray-600 mt-2 line-clamp-3">{item.description}</p>
+                            <div className="flex flex-wrap gap-2 mt-4">
+                                <Badge variant="outline"
+                                       className="text-blue-600 border-blue-600 hover:bg-blue-50">{item.position}</Badge>
+                                <Badge variant="outline"
+                                       className="text-red-600 border-red-600 hover:bg-red-50">{item.jobType}</Badge>
+                                <Badge variant="outline"
+                                       className="text-purple-600 border-purple-600 hover:bg-purple-50">{item.salary}</Badge>
+                            </div>
                         </div>
-                        <h4 className="mt-3 text-lg font-bold text-gray-800">{item.title}</h4>
-                        <p className="text-sm text-gray-600 mt-2 line-clamp-3">{item.description}</p>
-                        <div className="flex flex-wrap gap-2 mt-4">
-                            <Badge variant="outline" className="text-blue-600 border-blue-600 hover:bg-blue-50">{item.position}</Badge>
-                            <Badge variant="outline" className="text-red-600 border-red-600 hover:bg-red-50">{item.jobType}</Badge>
-                            <Badge variant="outline" className="text-purple-600 border-purple-600 hover:bg-purple-50">{item.salary}</Badge>
-                        </div>
-                    </div>
+                    </Link>
                 ))}
             </div>
             {visibleJob < jobList.length && (
