@@ -6,7 +6,7 @@ const Filter = {
         "UI/UX Designer", "DevOps Engineer", "Mobile App Developer",
         "QA Engineer", "Data Scientist", "Data Analyst", "AI Engineer"
     ],
-    location: ["Dhaka", "Rajshahi", "Shylet", "Pabna", "Feni", "Cumilla", "Tangail","Barisal"],
+    location: ["Remote", "Dhaka", "Sylhet", "Khulna", "Chittagong", "Cumilla", "Tangail","Barisal"],
     salaryRange: [
         { label: "$0-$400", min: 0, max: 400 },
         { label: "$400-$700", min: 400, max: 700 },
