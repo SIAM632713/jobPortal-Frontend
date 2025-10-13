@@ -8,9 +8,9 @@ const Filter = {
     ],
     location: ["Remote", "Dhaka", "Sylhet", "Khulna", "Chittagong", "Cumilla", "Tangail","Barisal"],
     salaryRange: [
-        { label: "$0-$400", min: 0, max: 400 },
-        { label: "$400-$700", min: 400, max: 700 },
-        { label: "$700-$1300", min: 700, max: 1300 }
+        { label: "20000-40000", min: 20000, max: 40000 },
+        { label: "45000-70000", min: 45000, max: 70000 },
+        { label: "75000-130000", min: 75000, max: 130000 }
     ]
 };
 
