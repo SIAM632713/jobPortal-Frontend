@@ -42,10 +42,10 @@ const authAPI=createApi({
            })
         }),
         userUpdate:builder.mutation({
-            query:({id,newData})=>({
+            query:({id,formData})=>({
                 url:`/update-user/${id}`,
                 method:"POST",
-                body:newData,
+                body:formData,
             })
         }),
         getUser:builder.query({

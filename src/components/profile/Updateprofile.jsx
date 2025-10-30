@@ -1,8 +1,6 @@
 import React, {useState} from 'react';
 import { X } from 'lucide-react';
 import {useUserUpdateMutation} from "@/redux/feature/authAPI/authAPI.js";
-import axios from "axios";
-import {getBaseURL} from "@/utilitis/getBaseURL.js";
 import ButtonLoader from "@/components/buttonLoader/buttonLoader.jsx";
 import {useSelector} from "react-redux";
 
@@ -17,14 +15,14 @@ const Updateprofile = ({ HandleModalclose, isModalOpen,refetch }) => {
         fullname: "",
         phone: "",
         bio: "",
-        imageFile: "",
+        resume: "",
         skills:"",
     });
 
     const handleOnChange = (e) => {
         const { name, value, files, type } = e.target;
-        if (type === 'file') {
-            setinputForm(prev => ({ ...prev, imageFile: files[0] }));
+        if (type === "file") {
+            setinputForm(prev => ({ ...prev, [name]: files[0] }));
         } else {
             setinputForm(prev => ({ ...prev, [name]: value }));
         }
@@ -34,30 +32,17 @@ const Updateprofile = ({ HandleModalclose, isModalOpen,refetch }) => {
         e.preventDefault();
         setUpload(true);
         try {
-            let imageUrl = "";
+            const formData = new FormData();
+            formData.append("fullname", inputForm.fullname);
+            formData.append("phone", inputForm.phone);
+            formData.append("bio", inputForm.bio);
+            formData.append("skills", inputForm.skills);
 
-            if (inputForm.imageFile) {
-                const formData = new FormData();
-                formData.append("image", inputForm.imageFile);
-
-                const imageUploadResponse = await axios.post(`${getBaseURL()}/api/upload`, formData, {
-                    headers: {
-                        "Content-Type": "multipart/form-data"
-                    }
-                });
-
-                imageUrl = imageUploadResponse.data.url;
+            if (inputForm.resume) {
+                formData.append("resume", inputForm.resume);
             }
 
-            const newData={
-                fullname:inputForm.fullname,
-                phone:inputForm.phone,
-                bio:inputForm.bio,
-                resume:imageUrl,
-                skills:inputForm.skills,
-            }
-
-            await userUpdate({id:user?._id,newData}).unwrap()
+            await userUpdate({id:user?._id,formData}).unwrap()
             alert("Profile Update successfully")
             refetch()
             HandleModalclose()
@@ -136,8 +121,9 @@ const Updateprofile = ({ HandleModalclose, isModalOpen,refetch }) => {
                         <label className="block text-sm font-medium text-gray-700 mb-1">Profile Image</label>
                         <input
                             onChange={handleOnChange}
-                            name="imageFile"
+                            name="resume"
                             type="file"
+                            accept="image/*,.pdf"
                             className="w-full text-sm text-gray-500
                                 file:mr-4 file:py-2 file:px-4
                                 file:rounded-md file:border-0

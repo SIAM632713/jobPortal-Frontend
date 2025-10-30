@@ -1,3 +1,7 @@
+// export const getBaseURL = () => {
+//     return "https://jobportal-backend-57hn.onrender.com"
+// }
+
 export const getBaseURL = () => {
-    return "https://jobportal-backend-57hn.onrender.com"
+    return "http://localhost:7000"
 }

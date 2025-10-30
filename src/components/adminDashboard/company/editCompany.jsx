@@ -18,7 +18,7 @@ const EditCompany = () => {
         description: "",
         website: "",
         location: "",
-        imageFile:""
+        logo:""
     });
 
     useEffect(() => {
@@ -30,7 +30,7 @@ const EditCompany = () => {
                     description:company.description || "",
                     website :company.website || "",
                     location : company.location || "",
-                    imageFile:company.logo || ""
+                    logo:company.logo || ""
                 })
             }
         }
@@ -38,8 +38,8 @@ const EditCompany = () => {
 
     const handleOnChange = (e) => {
         const { name, value, files, type } = e.target;
-        if (type === 'file') {
-            setinputForm(prev => ({ ...prev, imageFile: files[0] }));
+        if (type === "file") {
+            setinputForm(prev => ({ ...prev, [name]: files[0] }));
         } else {
             setinputForm(prev => ({ ...prev, [name]: value }));
         }
@@ -49,27 +49,16 @@ const EditCompany = () => {
         e.preventDefault();
         setUpload(true);
         try {
-            let imageUrl = "";
+            const newData = new FormData();
+            newData.append("name", inputForm.name);
+            newData.append("description", inputForm.description);
+            newData.append("website", inputForm.website);
+            newData.append("location", inputForm.location);
+            newData.append("role", inputForm.role);
 
-            if (inputForm.imageFile) {
-                const formData = new FormData();
-                formData.append("image", inputForm.imageFile);
 
-                const imageUploadResponse = await axios.post(`${getBaseURL()}/api/upload`, formData, {
-                    headers: {
-                        "Content-Type": "multipart/form-data"
-                    }
-                });
-
-                imageUrl = imageUploadResponse.data.url;
-            }
-
-            const newData={
-                name:inputForm.name,
-                description:inputForm.description,
-                website:inputForm.website,
-                location:inputForm.location,
-                logo:imageUrl,
+            if (inputForm.logo) {
+                newData.append("logo", inputForm.logo);
             }
 
             await updateCompany({id,newData:newData}).unwrap()
@@ -79,7 +68,7 @@ const EditCompany = () => {
                 description: "",
                 website: "",
                 location: "",
-                imageFile:""
+                logo:""
             })
         }catch(err) {
             console.log(err);
@@ -151,8 +140,9 @@ const EditCompany = () => {
                             <div className="border-2 border-dashed border-gray-300 rounded-lg p-4">
                                 <input
                                     onChange={handleOnChange}
-                                    name="imageFile"
+                                    name="logo"
                                     type="file"
+                                    accept="image/*"
                                     className="w-full text-sm text-gray-500
                                         file:mr-4 file:py-2 file:px-4
                                         file:rounded-md file:border-0

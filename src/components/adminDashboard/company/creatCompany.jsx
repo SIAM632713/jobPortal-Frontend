@@ -2,8 +2,6 @@ import React, {useState} from "react";
 import { ArrowLeft } from "lucide-react";
 import {Link} from "react-router-dom";
 import {useRegisterCompanyMutation} from "@/redux/feature/companyAPI/companyAPI.js";
-import axios from "axios";
-import {getBaseURL} from "@/utilitis/getBaseURL.js";
 import {useSelector} from "react-redux";
 import ButtonLoader from "@/components/buttonLoader/buttonLoader.jsx";
 
@@ -18,44 +16,34 @@ const CreatCompany = () => {
         description: "",
         website: "",
         location: "",
-        imageFile:""
+        logo:""
     });
 
     const handleOnChange = (e) => {
         const { name, value, files, type } = e.target;
-        if (type === 'file') {
-            setinputForm(prev => ({ ...prev, imageFile: files[0] }));
+        if (type === "file") {
+            setinputForm(prev => ({ ...prev, [name]: files[0] }));
         } else {
             setinputForm(prev => ({ ...prev, [name]: value }));
         }
     };
 
+
     const handleSubmit =async (e) => {
         e.preventDefault();
         setUpload(true);
         try {
-            let imageUrl = "";
+            const newData = new FormData();
+            newData.append("name", inputForm.name);
+            newData.append("description", inputForm.description);
+            newData.append("website", inputForm.website);
+            newData.append("location", inputForm.location);
+            newData.append("role", inputForm.role);
+            newData.append("userId",user?._id);
 
-            if (inputForm.imageFile) {
-                const formData = new FormData();
-                formData.append("image", inputForm.imageFile);
 
-                const imageUploadResponse = await axios.post(`${getBaseURL()}/api/upload`, formData, {
-                    headers: {
-                        "Content-Type": "multipart/form-data"
-                    }
-                });
-
-                imageUrl = imageUploadResponse.data.url;
-            }
-
-            const newData={
-                name:inputForm.name,
-                description:inputForm.description,
-                website:inputForm.website,
-                location:inputForm.location,
-                logo:imageUrl,
-                userId:user?._id
+            if (inputForm.logo) {
+                newData.append("logo", inputForm.logo);
             }
 
             await registerCompany(newData).unwrap()
@@ -137,8 +125,9 @@ const CreatCompany = () => {
                             <div className="border-2 border-dashed border-gray-300 rounded-lg p-4">
                                 <input
                                     onChange={handleOnChange}
-                                    name="imageFile"
+                                    name="logo"
                                     type="file"
+                                    accept="image/*"
                                     className="w-full text-sm text-gray-500
                                         file:mr-4 file:py-2 file:px-4
                                         file:rounded-md file:border-0

@@ -18,12 +18,13 @@ const Register = () => {
         phone: "",
         password: "",
         role: "",
+        profilePhoto:""
     });
 
     const handleOnChange = (e) => {
         const { name, value, files, type } = e.target;
-        if (type === 'file') {
-            setinputForm(prev => ({ ...prev, imageFile: files[0] }));
+        if (type === "file") {
+            setinputForm(prev => ({ ...prev, [name]: files[0] }));
         } else {
             setinputForm(prev => ({ ...prev, [name]: value }));
         }
@@ -33,38 +34,26 @@ const Register = () => {
         e.preventDefault();
         setUpload(true);
         try {
-            let imageUrl = "";
+            const formData = new FormData();
+            formData.append("fullname", inputForm.fullname);
+            formData.append("email", inputForm.email);
+            formData.append("phone", inputForm.phone);
+            formData.append("password", inputForm.password);
+            formData.append("role", inputForm.role);
 
-            if (inputForm.imageFile) {
-                const formData = new FormData();
-                formData.append("image", inputForm.imageFile);
 
-                const imageUploadResponse = await axios.post(`${getBaseURL()}/api/upload`, formData, {
-                    headers: {
-                        "Content-Type": "multipart/form-data"
-                    }
-                });
-
-                imageUrl = imageUploadResponse.data.url;
+            if (inputForm.profilePhoto) {
+                formData.append("profilePhoto", inputForm.profilePhoto);
             }
 
-            const newData={
-                fullname:inputForm.fullname,
-                email:inputForm.email,
-                phone:inputForm.phone,
-                password:inputForm.password,
-                profilePhoto:imageUrl,
-                role:inputForm.role,
-            }
-
-            await registerUser(newData).unwrap()
+            await registerUser(formData).unwrap()
             alert("Register successfully")
             setinputForm({
                 fullname: "",
                 email: "",
                 phone: "",
                 password: "",
-                Image: null,
+                profilePhoto: "",
                 role: "",
             })
             navigate("/login")
@@ -132,7 +121,7 @@ const Register = () => {
 
                     <div>
                         <label className="block text-sm font-medium mb-1">profile</label>
-                        <Input onChange={handleOnChange} id="picture" type="file" name="Image" />
+                        <Input onChange={handleOnChange} type="file" name="profilePhoto" accept="image/*"/>
                     </div>
 
                     <div className="flex items-center space-x-4 text-sm">
